@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Data Detective - learn Python &amp; Pandas by solving crimes</title>
+  <meta name="description" content="A noir detective story game where you crack cases in Mumbai by writing real Python and Pandas in your browser. From print() to anomaly detection in 6 cases. Free, no login.">
+  <meta name="theme-color" content="#0c0e12">
+  <meta name="author" content="Ganesh Kumar">
+  <link rel="canonical" href="https://imganesh523-maker.github.io/data-detective/">
+
+  <!-- Open Graph / LinkedIn preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Data Detective">
+  <meta property="og:title" content="Data Detective - learn Python & Pandas by solving crimes">
+  <meta property="og:description" content="A noir story game: crack 6 cases in Mumbai with real Python & Pandas, right in your browser. From print() to anomaly detection. Free, no login.">
+  <meta property="og:url" content="https://imganesh523-maker.github.io/data-detective/">
+  <meta property="og:image" content="https://imganesh523-maker.github.io/data-detective/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:image:alt" content="Data Detective - a case file stamped CASE CLOSED, with Python code on an evidence board">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Data Detective - learn Python & Pandas by solving crimes">
+  <meta name="twitter:description" content="Crack 6 noir cases with real Python & Pandas in your browser.">
+  <meta name="twitter:image" content="https://imganesh523-maker.github.io/data-detective/assets/og-image.png">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/bebas-neue-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/special-elite-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <canvas id="rain" aria-hidden="true"></canvas>
+
+  <header class="topbar" id="topbar" hidden>
+    <button class="brand" data-nav="title" aria-label="Data Detective home">
+      <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true"><use href="#i-hat"/></svg>
+      <span>DATA DETECTIVE</span>
+    </button>
+    <div class="rankbox" aria-live="polite">
+      <span class="rank-badge" id="rankBadge">ROOKIE</span>
+      <div class="xp" title="Experience points">
+        <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+        <span class="xp-text" id="xpText">0 XP</span>
+      </div>
+    </div>
+    <nav class="topnav">
+      <button class="btn ghost small" data-nav="board">Case board</button>
+      <button class="btn ghost small" data-open="about">About</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ===================================================== TITLE -->
+    <section class="view view-title" id="view-title" aria-labelledby="title-h">
+      <div class="title-inner">
+        <p class="kicker">Mumbai · 2026 · Bureau of Data Crimes</p>
+        <h1 id="title-h" class="title-logo"><span>DATA</span><span>DETECTIVE</span></h1>
+        <p class="tagline" id="tagline" aria-label="The city runs on data. So does crime. Learn Python and Pandas by cracking six cases."></p>
+        <div class="title-actions">
+          <button class="btn primary big" id="btnStart">Start investigating</button>
+          <button class="btn ghost big" data-nav="board" id="btnBoard">Open case board</button>
+        </div>
+        <ul class="title-facts">
+          <li><b>6</b> cases</li><li><b>22</b> clues</li><li><b>Real</b> Python in your browser</li><li><b>No</b> login</li>
+        </ul>
+        <p class="title-credit">Built by <a href="https://github.com/imganesh523-maker" target="_blank" rel="noopener">Ganesh Kumar</a></p>
+      </div>
+      <svg class="title-silhouette" viewBox="0 0 300 420" aria-hidden="true"><use href="#i-detective"/></svg>
+    </section>
+
+    <!-- ===================================================== BOARD -->
+    <section class="view view-board" id="view-board" hidden aria-labelledby="board-h">
+      <div class="board-head">
+        <div>
+          <p class="kicker">Evidence board</p>
+          <h2 id="board-h">Open investigations</h2>
+          <p class="muted">Each case teaches one new set of skills. Solve them in order to climb from Rookie to Chief.</p>
+        </div>
+        <div class="board-progress" id="boardProgress"></div>
+      </div>
+      <div class="board" id="board">
+        <svg class="strings" id="strings" aria-hidden="true"></svg>
+        <ol class="case-grid" id="caseGrid"></ol>
+      </div>
+      <p class="board-foot">
+        <button class="linkish" id="btnUnlockAll">Preview mode: unlock all cases</button>
+        · <button class="linkish" id="btnReset">Reset progress</button>
+      </p>
+    </section>
+
+    <!-- ===================================================== CASE -->
+    <section class="view view-case" id="view-case" hidden>
+      <div class="case-layout">
+        <div class="casefile" id="casefile">
+          <div class="casefile-head">
+            <button class="btn ghost small" data-nav="board" aria-label="Back to case board">← Board</button>
+            <div>
+              <p class="kicker" id="caseKicker">Case #01</p>
+              <h2 id="caseTitle">Title</h2>
+            </div>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Case file sections">
+            <button role="tab" class="tab" id="tab-story" aria-controls="panel-story" data-tab="story">Story</button>
+            <button role="tab" class="tab" id="tab-brief" aria-controls="panel-brief" data-tab="brief">Briefing</button>
+            <button role="tab" class="tab" id="tab-steps" aria-controls="panel-steps" data-tab="steps">Investigation</button>
+            <button role="tab" class="tab" id="tab-evidence" aria-controls="panel-evidence" data-tab="evidence">Evidence</button>
+          </div>
+          <div class="panel" role="tabpanel" id="panel-story" aria-labelledby="tab-story"></div>
+          <div class="panel" role="tabpanel" id="panel-brief" aria-labelledby="tab-brief" hidden></div>
+          <div class="panel" role="tabpanel" id="panel-steps" aria-labelledby="tab-steps" hidden></div>
+          <div class="panel" role="tabpanel" id="panel-evidence" aria-labelledby="tab-evidence" hidden></div>
+        </div>
+
+        <div class="lab" id="lab">
+          <div class="lab-bar">
+            <div class="filetab"><span class="dot-file"></span><span id="fileName">case.py</span></div>
+            <div class="lab-status" id="labStatus" aria-live="polite"><span class="led"></span><span class="lab-status-text">Python lab offline</span></div>
+            <div class="lab-actions">
+              <button class="btn ghost small" id="btnResetCode" title="Reset this step's code">Reset</button>
+              <button class="btn run" id="btnRun" title="Run (Ctrl+Enter)"><span class="run-ico">▶</span> Run <kbd>Ctrl ↵</kbd></button>
+            </div>
+          </div>
+          <div class="editor" id="editor"></div>
+          <div class="console" id="console" aria-live="polite" aria-label="Output console" tabindex="0">
+            <div class="console-head"><span>Console</span><button class="linkish" id="btnClear">clear</button></div>
+            <div class="console-body" id="consoleBody">
+              <p class="muted console-hint">Press <b>Run</b> (or <kbd>Ctrl</kbd>+<kbd>Enter</kbd>) to execute your code. The first run boots Python in your browser.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================== CASE CLOSED -->
+  <div class="overlay" id="closed" hidden role="dialog" aria-modal="true" aria-labelledby="closedTitle">
+    <div class="closed-card">
+      <div class="stamp" aria-hidden="true">CASE CLOSED</div>
+      <p class="kicker" id="closedKicker">Case #01</p>
+      <h2 id="closedTitle">Title</h2>
+      <div class="closed-story" id="closedStory"></div>
+      <div class="promo" id="promo" hidden></div>
+      <div class="share">
+        <canvas id="shareCanvas" width="1200" height="627" aria-label="Shareable case closed card"></canvas>
+        <div class="share-actions">
+          <button class="btn primary" id="btnDownload">Download card (PNG)</button>
+          <button class="btn linkedin" id="btnLinkedIn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            Share on LinkedIn</button>
+          <button class="btn ghost" id="btnCopyCaption">Copy caption</button>
+        </div>
+        <p class="muted small-note">LinkedIn shares the game link. To post the card too, download it and attach it to your post.</p>
+      </div>
+      <div class="closed-nav">
+        <button class="btn ghost" data-nav="board">Back to board</button>
+        <button class="btn primary" id="btnNextCase">Next case →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================== ABOUT -->
+  <div class="overlay" id="about" hidden role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="about-card">
+      <button class="close" data-close="about" aria-label="Close">×</button>
+      <h2 id="aboutTitle">About Data Detective</h2>
+      <p>A story-driven game that teaches Python and Pandas data analysis from absolute basics to anomaly detection. Every clue hides in a dataset, and every answer is checked by running your real Python code - in your browser, with <a href="https://pyodide.org" target="_blank" rel="noopener">Pyodide</a>.</p>
+      <p>No login, no backend, no tracking. Your progress lives only in this browser (localStorage).</p>
+      <p><b>Built by Ganesh Kumar</b> · <a href="https://github.com/imganesh523-maker" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/ganeshkumar-ai/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/imganesh523-maker/data-detective" target="_blank" rel="noopener">Source code</a></p>
+      <h3>Credits</h3>
+      <ul class="credits">
+        <li>Python in the browser: <a href="https://pyodide.org" target="_blank" rel="noopener">Pyodide</a> (MPL-2.0), with pandas, NumPy, matplotlib (BSD/PSF licences), served from the jsDelivr CDN.</li>
+        <li>Code editor: <a href="https://codemirror.net" target="_blank" rel="noopener">CodeMirror 6</a> (MIT), bundled in <code>vendor/</code>.</li>
+        <li>Fonts: Bebas Neue, IBM Plex Sans, JetBrains Mono (SIL Open Font License), Special Elite (Apache 2.0) - self-hosted.</li>
+        <li>Illustrations, icons and all datasets: original, made for this project. Every person, phone number, PNR and account in the cases is fictional.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- ===================================================== SVG SPRITES (original artwork) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-hat" viewBox="0 0 64 64"><path fill="currentColor" d="M14 38c2-12 6-22 18-22s16 10 18 22c5 1 10 3 10 6 0 4-12 7-28 7S4 48 4 44c0-3 5-5 10-6zm4 0c4 1 9 1.6 14 1.6s10-.6 14-1.6c-.4-2.4-1-4.6-1.8-6.6C40 33 36 34 32 34s-8-1-12.2-2.6c-.8 2-1.4 4.2-1.8 6.6z"/></symbol>
+      <symbol id="i-detective" viewBox="0 0 300 420"><path fill="currentColor" d="M150 40c-36 0-52 22-58 54-24 4-46 12-46 22 0 12 46 20 104 20s104-8 104-20c0-10-22-18-46-22-6-32-22-54-58-54zm-50 108c0 30 20 58 50 58s50-28 50-58c-14 2-32 3-50 3s-36-1-50-3zm-28 70c-30 14-48 44-56 92l-6 110h280l-6-110c-8-48-26-78-56-92l-34 34-44 112-44-112-34-34zm78 30 14 26-14 70-14-70 14-26z"/></symbol>
+      <symbol id="i-truck" viewBox="0 0 64 64"><path fill="currentColor" fill-rule="evenodd" d="M4 16h34v28H4zM40 24h11l9 10v10H40zM44 28v7h12l-6-7z"/><circle cx="15" cy="48" r="5" fill="currentColor"/><circle cx="49" cy="48" r="5" fill="currentColor"/></symbol>
+      <symbol id="i-star" viewBox="0 0 64 64"><path fill="currentColor" d="m32 6 7.6 16.6 18.2 2-13.5 12.3 3.8 17.9L32 45.6l-16.1 9.2 3.8-17.9L6.2 24.6l18.2-2z"/></symbol>
+      <symbol id="i-train" viewBox="0 0 64 64"><path fill="currentColor" fill-rule="evenodd" d="M18 6h28c6 0 10 4 10 10v26c0 5-4 8-8 8l6 8h-6l-5-7H21l-5 7h-6l6-8c-4 0-8-3-8-8V16c0-6 4-10 10-10zm-2 10v12h32V16zM20 34a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm24 0a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 64 64"><path fill="currentColor" d="M36 4 10 36h18l-4 24 28-34H34z"/></symbol>
+      <symbol id="i-bat" viewBox="0 0 64 64"><path fill="currentColor" d="m44 6 14 14-22 22-6 2-8-8 2-6zM20 40l4 4-12 14-6-6z"/><circle cx="50" cy="50" r="6" fill="currentColor"/></symbol>
+      <symbol id="i-vault" viewBox="0 0 64 64"><path fill="currentColor" fill-rule="evenodd" d="M8 8h48v44H8zm4 4v36h40V12zm20 6a12 12 0 1 1 0 24 12 12 0 0 1 0-24zm0 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12zM14 54h8v4h-8zm28 0h8v4h-8z"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 64 64"><path fill="currentColor" fill-rule="evenodd" d="M20 28v-8a12 12 0 0 1 24 0v8h4v28H16V28zm6 0h12v-8a6 6 0 0 0-12 0z"/></symbol>
+    </defs>
+  </svg>
+
+  <noscript><p class="noscript">Data Detective needs JavaScript to run Python in your browser.</p></noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
